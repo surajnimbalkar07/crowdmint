@@ -1,0 +1,40 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "C:\\Users\\Suraj\\Desktop\\pp\\genesis\\src\\contracts\\Genesis.sol": {
+      "lastModificationDate": 1747144398081,
+      "contentHash": "5534347ea4d1ba3f8222362b0856728b",
+      "sourceName": "src/contracts/Genesis.sol",
+      "solcConfig": {
+        "version": "0.8.11",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.7"
+      ],
+      "artifacts": [
+        "Genesis"
+      ]
+    }
+  }
+}
