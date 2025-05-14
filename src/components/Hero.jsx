@@ -10,7 +10,7 @@ const Hero = () => {
       >
         <span className="capitalize">Bring creative projects to life on</span>
         <br />
-        <span className="uppercase text-green-600">genesis.</span>
+        <span className="uppercase text-green-600">CrowdMint.</span>
       </h1>
       <div className="flex justify-center items-center space-x-2">
         <button
