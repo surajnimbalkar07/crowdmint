@@ -3,16 +3,25 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { deleteProject } from '../services/blockchain'
 import { useGlobalState, setGlobalState } from '../store'
+import { useState } from 'react'
 
 const DeleteProject = ({ project }) => {
   const [deleteModal] = useGlobalState('deleteModal')
+  const [isDeleting, setIsDeleting] = useState(false)
   const navigate = useNavigate()
 
   const handleSubmit = async () => {
-    await deleteProject(project?.id)
-    toast.success('Project deleted successfully, will reflect in 30sec.')
-    setGlobalState('deleteModal', 'scale-0')
-    navigate.push('/')
+    setIsDeleting(true)
+    try {
+      await deleteProject(project?.id)
+      toast.success('Project deleted successfully, will reflect in 30sec.')
+      setGlobalState('deleteModal', 'scale-0')
+      navigate('/')
+    } catch (error) {
+      toast.error('Failed to delete project. Please try again.')
+    } finally {
+      setIsDeleting(false)
+    }
   }
 
   return (
@@ -52,16 +61,43 @@ const DeleteProject = ({ project }) => {
 
           <div className="flex flex-col justify-center items-center rounded-xl mt-5">
             <p>Are you sure?</p>
-            <small className="text-red-400">This is irreversible!</small>
+            <small className="text-red-400">This action cannot be undone!</small>
           </div>
 
           <button
-            className="inline-block px-6 py-2.5 bg-red-600
-            text-white font-medium text-md leading-tight
-            rounded-full shadow-md hover:bg-red-700 mt-5"
+            disabled={isDeleting}
+            className={`inline-block px-6 py-2.5 ${
+              isDeleting ? 'bg-gray-500' : 'bg-red-600 hover:bg-red-700'
+            } text-white font-medium text-md leading-tight
+            rounded-full shadow-md mt-5 flex justify-center items-center`}
             onClick={handleSubmit}
           >
-            Delete Project
+            {isDeleting ? (
+              <>
+                <svg
+                  className="animate-spin h-5 w-5 mr-2 text-white"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  />
+                </svg>
+                Vanishing your project...
+              </>
+            ) : (
+              'Delete Project'
+            )}
           </button>
         </div>
       </div>

@@ -7,14 +7,22 @@ import { useGlobalState, setGlobalState } from '../store'
 const BackProject = ({ project }) => {
   const [backModal] = useGlobalState('backModal')
   const [amount, setAmount] = useState('')
+  const [isBacking, setIsBacking] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!amount) return
 
-    await backProject(project?.id, amount)
-    toast.success('Project backed successfully, will reflect in 30sec.')
-    setGlobalState('backModal', 'scale-0')
+    try {
+      setIsBacking(true)
+      await backProject(project?.id, amount)
+      toast.success('Thank you for backing! It will reflect in 30 sec.')
+      setGlobalState('backModal', 'scale-0')
+    } catch (error) {
+      toast.error('Failed to back project. Please try again.')
+    } finally {
+      setIsBacking(false)
+    }
   }
 
   return (
@@ -52,14 +60,9 @@ const BackProject = ({ project }) => {
             </div>
           </div>
 
-          <div
-            className="flex justify-between items-center
-          bg-gray-300 rounded-xl mt-5"
-          >
+          <div className="flex justify-between items-center bg-gray-300 rounded-xl mt-5">
             <input
-              className="block w-full bg-transparent
-            border-0 text-sm text-slate-500 focus:outline-none
-            focus:ring-0"
+              className="block w-full bg-transparent border-0 text-sm text-slate-500 focus:outline-none focus:ring-0"
               type="number"
               step={0.01}
               min={0.01}
@@ -68,16 +71,44 @@ const BackProject = ({ project }) => {
               onChange={(e) => setAmount(e.target.value)}
               value={amount}
               required
+              disabled={isBacking}
             />
           </div>
 
           <button
             type="submit"
-            className="inline-block px-6 py-2.5 bg-green-600
-            text-white font-medium text-md leading-tight
-            rounded-full shadow-md hover:bg-green-700 mt-5"
+            disabled={isBacking}
+            className={`inline-block px-6 py-2.5 ${
+              isBacking ? 'bg-gray-500' : 'bg-green-600 hover:bg-green-700'
+            } text-white font-medium text-md leading-tight
+            rounded-full shadow-md mt-5 flex justify-center items-center`}
           >
-            Back Project
+            {isBacking ? (
+              <>
+                <svg
+                  className="animate-spin h-5 w-5 mr-2 text-white"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  />
+                </svg>
+                Backing in progress... Thank you! 💚
+              </>
+            ) : (
+              'Back Project'
+            )}
           </button>
         </form>
       </div>
